@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+h3{font-family: Calibri; font-size: 22pt; font-style: normal; font-weight: bold; color:SlateBlue;
+text-align: center; text-decoration: underline }
+body{font-family: Calibri; color:blue; font-size: 4pt; font-style: normal; background-color: SlateBlue; border-collapse: collapse; border: 20px solid navy;border-radius: 25px;
+}
+
+</style>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deployment</title>
+<style type="text/css">
+#form{font-family: Calibri; font-size: 11pt; font-style: normal; font-weight: bold; color:SlateBlue;
+text-align: center; text-decoration: underline;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 50px;
+    margin-left: 50px;
+}
+.form-control{margin-bottom: 20px;width:10px}
+</style>
+<script src="jquery.min.js"></script>
+<script src="bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+<link href="bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+   <form class="form" align="center" id="form">  
+      <div class="row">
+        <div class="col-xs-6">
+            <div class="row">
+                <label for="BuildNodeIPAddress" class="col-xs-12  col-sm-6">Build Node IP Address</label>
+		<label for="BuildNodeUserName" class="col-xs-12  col-sm-6">Build Node User Name</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="BuildNodeIPAddress"/>
+                </div>
+		<div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="BuildNodeUserName"/>
+                </div>              
+            </div>
+        </div>
+	
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="BuildNodePassword" class="col-xs-12  col-sm-6">Build Node Password</label>
+                <label for="CIMCAddresses" class="col-xs-12  col-sm-6">CIMC Addresses</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="BuildNodePassword"/>
+                </div>
+		<div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="CIMCAddresses"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="CIMCUserName" class="col-xs-12  col-sm-6">CIMC User Name</label>
+                <label for="CIMCPassword" class="col-xs-12  col-sm-6">CIMC Password</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="CIMCUserName"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="CIMCPassword"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="MAASServerIPAddress" class="col-xs-12  col-sm-6">MAAS Server IP Address</label>
+                <label for="PXEInterface" class="col-xs-12  col-sm-6">PXE Interface</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="MAASServerIPAddress"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="PXEInterface"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="MAASAdminEmail" class="col-xs-12  col-sm-6">MAAS Admin Email</label>
+                <label for="MAASAdminUserName" class="col-xs-12  col-sm-6">MAAS Admin UserName</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="MAASAdminEmail"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="MAASAdminUserName"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="MAASAdminPassword" class="col-xs-12  col-sm-6">MAAS Admin Password</label>
+                <label for="NTPServerAddress" class="col-xs-12  col-sm-6">NTP Server Address</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="MAASAdminUserName"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="NTPServerAddress"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="NTPServerAddress" class="col-xs-12  col-sm-6">NTP Server Address</label>
+                <label for="PXEMACAddress1" class="col-xs-12  col-sm-6">System1 MAC Address for PXE</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="NTPServerAddress"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="PXEMACAddress1"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="PXEMACAddress2" class="col-xs-12  col-sm-6">System2 MAC Address for PXE</label>
+                <label for="PXEMACAddress3" class="col-xs-12  col-sm-6">System3 MAC Address for PXE</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="PXEMACAddress2"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="PXEMACAddress3"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="VlanRange" class="col-xs-12  col-sm-6">Vlan Range</label>
+                <label for="Node1VlanMacAddress" class="col-xs-12  col-sm-6">System1 Mac Address for VLAN</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="VlanRange"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node1VlanMacAddress"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="Node2VlanMacAddress" class="col-xs-12  col-sm-6">Node2 Mac Address for VLAN</label>
+                <label for="Node3VlanMacAddress" class="col-xs-12  col-sm-6">Node3 Mac Address for VLAN</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node2VlanMacAddress"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node3VlanMacAddress"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="Node1FlatMacAddress" class="col-xs-12  col-sm-6">Node1 Mac Address for Flat Network</label>
+                <label for="Node2FlatMacAddress" class="col-xs-12  col-sm-6">Node2 Mac Address for Flat Network</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node1FlatMacAddress"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node2FlatMacAddress"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="Node3FlatMacAddress" class="col-xs-12  col-sm-6">Node3 Mac Address for Flat Network</label>
+                <label for="domainname" class="col-xs-12  col-sm-6">Domain Name</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="Node3FlatMacAddress"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="domainname"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="FQDNNode1" class="col-xs-12  col-sm-6">FQDN for Node1</label>
+                <label for="FQDNNode2" class="col-xs-12  col-sm-6">FQDN for Node2</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="FQDNNode1"/>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="FQDNNode2"/>
+                </div>
+            </div>
+        </div>
+	<div class="col-xs-6">
+            <div class="row">
+                <label for="FQDNNode3" class="col-xs-12  col-sm-6">FQDN for Node3</label>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <input class="form-control" type="text" id="FQDNNode3"/>
+                </div>
+            </div>
+        </div>
+     </div>
+   </form> 
+  </body>
+</html>

@@ -1,0 +1,201 @@
+# This YAML file describes an OpenStack deployment to a known
+# datacenter configuration.
+#
+
+# ----------------------------------
+# Hardware Configuration
+# ----------------------------------
+
+# maas-server is a fresh installed Ubuntu 14.04 system in the
+# datacenter with ssh access which will be installed to act as the
+# MAAS server and PXE/DHCP server. The --install-maas option will
+# install MAAS on this ubuntu server allowing this server to act as
+# a management node for commissioning and deploying clouds on the
+# remaining ipmi-machines or machines managed by the ucs-manager.
+maas-server:
+
+    # IP Address to be used on the "PXE" network for MAAS. If the
+    # pxe-interface is already bridged, whatever IP address is used
+    # there should match.  If pxe-interface is not bridged yet, the
+    # created bridge will have this IP address.
+    ipaddress: 10.20.0.1
+
+    # Interface name (`ip link`) connected to the PXE network that
+    # MAAS should take ownership of.  In addition to PXE, the
+    # installer assumes that this network will house Openstack
+    # Data/API/Management and provide public internet access.
+    # 
+    # You can specify a raw interface name or a pre-created bridge.
+    # If an interface is specified and is already part of a bridge,
+    # the bridge it is a part of will be assumed, otherwise the
+    # interface will be bridged for you.  If a bridge is specfied
+    # here, it will be used as is with no modification.
+    pxe-interface: eth0
+
+    # User on the system that you can reach via ssh public/private
+    # key login (passwordless).  Must have passwordless sudo rights.
+    username: cisco
+       
+    # Desired MAAS admin email, user and password.
+    maas-admin-email: admin@example.com
+    maas-admin-username: admin
+    maas-admin-password: Sdu12345
+
+    # Domain name for this pod.  This should be a new domain, not
+    # something that already exists in your lab.  MAAS will "own"
+    # this domain, and consider itself as the DNS authority for it.
+    domain-name: cloud.com
+
+    # Ntp server setting in MAAS
+    ntp-server:
+
+    # The following optional proxy variables can be set if the machines to not
+    # have direct internet access
+    # Proxy url used for https traffic
+    #https-proxy:
+
+    # Proxy url used for http traffic
+    #http-proxy: "http://myinternalproxy.com"
+
+    # A list of ipaddresses or domain extensions proxy should not be
+    # used for. The maas server itself will automatically be added
+    # to this list for you.
+    #no-proxy: 
+    #    - .cisco.com 
+    #    - 192.168.4.1
+    
+    # The location of ubuntu boot images for maas to import.
+    # Can be a local mirror of these files to limit network downloads.
+    boot-source-url: "http://maas.ubuntu.com/images/ephemeral-v2/daily/"
+    # if set to "true", maas will try to refresh the images every hour
+    boot-images-auto-import: "false"
+
+
+
+# ----------------------------------
+# IPMI Machines
+# ----------------------------------
+
+# If appropriate to the deployment, list details of each machine not
+# managed by a UCSM in order to register these machines in MAAS for
+# use in cloud deployments.  This applies to Generic PODs.
+
+# Each machine definition requires the following details:
+# - ipaddress: IP of the Cisco Integrated Management Controller
+# - username: the name of the administrative user on the CIMC
+# - password: the password of the administrative user on the CIMC
+# - system-hostname: the hostname MAAS will give to the node upon
+#                    install.  The domain will be appended to this
+#                    hostname part automatically.
+# - system-macaddresses: A MAC address on the elisted machine. This mac address
+#     can be any MAC on the machine. It is used by MAAS to identify the machine
+#     that is PXE booting to name that machine per the defined system-hostname.
+#
+# NOTE: Any machines intended for this openstack cloud will have corresponding
+# entries the openstack-services section.
+
+
+# Example
+ipmi-machines:
+    - {ipaddress: 10.64.72.25, username: admin, password: Sdu12345,
+           system-macaddresses: ['74:a2:e6:a3:45:8c'],
+           system-hostname: comp0}
+    - {ipaddress: 10.64.72.27, username: admin, password: Sdu12345,
+           system-macaddresses: ['74:a2:e6:a3:4d:4e'],
+           system-hostname: comp1}
+    - {ipaddress: 10.64.72.28, username: admin, password: Sdu12345,
+           system-macaddresses: ['74:a2:e6:a3:06:26'],
+           system-hostname: comp2}
+
+# ----------------------------------
+# Network definitions
+# ----------------------------------
+networks:
+    # The PXE network on which the MAAS server (PXE server) will
+    # boot and commission all machines. Each machine will need to
+    # have one NIC connected to the PXE network. The BIOS on each
+    # machine must set the NIC to PXE boot as the primary boot
+    # option. free-ip-low/high is the range of addresses that MAAS
+    # will divide up for use by DHCP. Make sure this is truly free
+    # on the network (for instance, doesn't include the gateway or
+    # the MAAS server).
+    - {name: pxe, cidr: 10.20.0.0/24, gateway: 10.20.0.1,
+       dns: 72.163.128.140,
+       free-ip-low: 10.20.0.11, free-ip-high: 10.20.0.250}
+
+    # Provider network definitions are optional when the cloud network topology
+    # is openvswitch. The network definitions and associated
+    # macaddresses are stored in MAAS as a unmanaged networks.
+    # The provider network parameters are passed as 
+    # mac-network-map configuration options to the VPP charm when deploying
+    # cisco-opendaylight. When deploying openvswitch, those mac addresses are
+    # provided to bridge mappings and can define either flat or vlan network
+    # types.
+    #
+    # The provider network definitions can be omitted for openvswitch
+    # deployments but may be used for testing purposes.
+    #
+    # MAC addresses can be repeated in multiple provider networks as long
+    # as the network name and optional vlan range is different.
+    # 
+    # Each provider network defines the following fields:
+    # - name: An alpha-numeric label for this network
+    # - macaddresses: A list of MACs associated with this network. These MAC
+    #     addresses must match a discovered MAC address of one of the target
+    #     nodes in the deployment that MAAS has enlisted.
+    # - type: The network type, can be vlan or flat.
+    # - range: Optionally for vlan type networks, a unique range of vlan ids.
+    #     For example, range: '100:200' would associate vlan ids 100 to 200
+    #     with the bridge created.
+    # - bond-name: Set this to the bond you want to create on each
+    #              machine.  If unspecified, the interfaces will not
+    #              be bonded.
+    # - other "bond-" parameters are optional, they are listed in
+    #   the provider1 example, along with their defaults.
+
+    - {name: provider1,
+       type: vlan, range: '1:2000',
+       macaddresses: ['a8:9d:21:28:54:9b',
+                      'a8:9d:21:28:4a:a7',
+                      'a8:9d:21:28:4c:fd']}
+
+    - {name: provider2, type: flat,
+       macaddresses: ['74:a2:e6:a3:45:8d',
+                      '74:a2:e6:a3:4d:4f',
+                      '74:a2:e6:a3:06:27']}
+
+# ----------------------------------
+# OpenStack services to deploy
+# ----------------------------------
+openstack-services:
+    # Openstack and Landscape admin credentials. Used to log into Horizon,
+    # Landscape or use novarc utils
+    admin-email: admin@example.com
+    admin-password: openstack
+
+    # Openstack Topology selection.  Choices are listed below
+    # compute: kvm
+    # network: openvswitch, openvswitch-with-dhcp, cisco-opendaylight,
+    # object-storage: ceph-object
+    # block-storage: ceph-block
+    compute: kvm
+    network: openvswitch-with-dhcp
+    object-storage: ceph-object
+    block-storage: ceph-block
+
+    # Hosts that should act as cloud nodes, and their tagged role.
+    # The Role can be any combination of tags, or untagged. If
+    # untagged, services not assigned will be placed on this node.
+    #  - openstack-storage - used for ceph
+    #  - openstack-compute - used for nova-compute
+    #  - openstack-control - openstack contoller services will be spread
+    #                        across these nodes.
+    # NOTE: Each needs to have a corresponding entry in the ipmi-machines
+    #       section.
+    machines:
+        - {fqdn: comp0.cloud.com, tags: [openstack-control, openstack-storage, openstack-compute]}
+        - {fqdn: comp1.cloud.com, tags: [openstack-control, openstack-storage, openstack-compute]}
+        - {fqdn: comp2.cloud.com, tags: [openstack-control, openstack-storage, openstack-compute]}
+
+# vim: sw=4 tw=68
+
