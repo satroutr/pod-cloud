@@ -24,7 +24,7 @@ cimcpassword = config.get("ipmi", "cimcpassword")
 ipmi = IPMItool()
 #print cimcip
 cimcaddresses = cimcip.split(",")
-
+ 
 for cimcaddress in cimcaddresses:
     print cimcaddress
     ipmi.connect(cimcaddress,cimcuser,cimcpassword)
@@ -41,19 +41,37 @@ print systemtime
 
 '''installing ipmi tool on build node'''
 
-installipmi = ssh.execute('apt-get install -y ipmitool', True )
+installipmi = ssh.execute('apt-get install -y ipmitool',True )
+
+''' Adding the repos to pull pod-cloud-installer'''
+
+addcommonpackage = ssh.execute('apt-get install -y software-properties-common',True)
+addrepo = ssh.execute('add-apt-repository "deb https://landscape-cisco:p0NSJJ3gNSV8FLRJXrlC@private-ppa.launchpad.net/landscape/lds-cisco-odl-release/ubuntu trusty main"', True)
+addkey = ssh.execute('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 6E85A86E4652B4E6',True)
+update=ssh.execute('apt-get update',True)
+'''Installing openstack clients to bootstrap'''
+
+addnovaclient = ssh.execute('apt-get install -y python-novaclient',True)
+addglanceclient = ssh.execute('apt-get install -y python-glanceclient',True)
+addneutronclient = ssh.execute('apt-get install -y python-neutronclient',True)
+addcinderclient = ssh.execute('apt-get install -y python-cinderclient',True)
+addkeystoneclient = ssh.execute('apt-get install -y python-keystoneclient',True)
+
+'''Adding nopassword to sudoers'''
+
+
 
 '''deleting the bridge if present then recreating the bridge'''
 
-bridgelist = ssh.execute('brctl show', True)
+bridgelist = ssh.execute('brctl show',True)
  #print bridgelist
-getbridge = ssh.execute('ifconfig | grep br0', True)
+getbridge = ssh.execute('ifconfig | grep br0',True)
 if getbridge == "":
     print "br0 is not present"
 else:
     print "br0 is present, details are %s, deleting the bridge" % getbridge
-    downbridge = ssh.execute('ifconfig br0 down', True)
-    delbridge = ssh.execute('brctl delbr br0', True)
+    downbridge = ssh.execute('ifconfig br0 down',True)
+    delbridge = ssh.execute('brctl delbr br0',True)
 update=ssh.execute('apt-get update',True)
 
 '''installing the latest pod cloud installer '''
@@ -86,3 +104,4 @@ print "Starting installation of Openstack wait for 4 hours"
 installingopenstack = ssh.execute('pod-cloud-installer -c deploy.cfg --all', False)
 sleep(30)
 installingopenstack = ssh.execute('pod-cloud-installer -c deploy.cfg --all', False)
+print installingopenstack
